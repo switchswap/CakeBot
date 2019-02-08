@@ -1,5 +1,5 @@
 import config
-import requests
+import aiohttp
 from discord.ext import commands
 from discord import Embed
 
@@ -12,12 +12,16 @@ class Osu:
 
     async def get_user_stats(self, username: str, game_mode: int):
         api_endpoint = "https://osu.ppy.sh"
-        payload = {'k': self.API_KEY, 'u': username, 'm': game_mode}
-        r = requests.get(api_endpoint + "/api/get_user", params=payload)
-        return r.json()
+        params = {'k': self.API_KEY, 'u': username, 'm': game_mode}
+        async with aiohttp.ClientSession() as session:
+            async with session.get(api_endpoint + "/api/get_user", params=params) as r:
+                if r.status == 200:
+                    return await r.json()
+                else:
+                    return None
 
     def parse_stats(self, stats_json_array):
-        if len(stats_json_array) == 0:
+        if stats_json_array is None or len(stats_json_array) == 0:
             embed = Embed(color=0xFF66AA)
             embed.description = ":x: Could not find user!"
             return embed
@@ -64,6 +68,7 @@ class Osu:
         stats_json_array = await self.get_user_stats(username, 3)
         embed = self.parse_stats(stats_json_array)
         await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Osu(bot))
