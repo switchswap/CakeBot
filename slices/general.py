@@ -12,12 +12,12 @@ class General:
         await ctx.send(f'The sum of **{first}** and **{second}**  is  **{total}**')
 
     @commands.command(name='ping')
-    async def only_me(self, ctx):
+    async def ping(self, ctx):
         await ctx.send("pong!")
 
-    @commands.command(name='me')
+    @commands.command(name='owner')
     @commands.is_owner()
-    async def only_me(self, ctx):
+    async def owner_test(self, ctx):
         await ctx.send(f'Hello {ctx.author.mention}. This command can only be used by you!!')
 
 

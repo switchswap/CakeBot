@@ -46,6 +46,7 @@ class XKCD:
             embed = Embed(color=0xFFFFFF, description=":x: Problem retrieving XKCD!")
         else:
             embed = Embed(color=0xFFFFFF)
+            embed.url = 'https://xkcd.com/{}/'.format(xkcd_json['num'])
             embed.title = '[XKCD #{}] {}'.format(xkcd_json['num'], xkcd_json['safe_title'])
             embed.set_image(url=xkcd_json['img'])
         await ctx.send(embed=embed)
