@@ -21,7 +21,5 @@ class General:
         await ctx.send(f'Hello {ctx.author.mention}. This command can only be used by you!!')
 
 
-
-# Important!
 def setup(bot):
     bot.add_cog(General(bot))
