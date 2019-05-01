@@ -23,11 +23,12 @@ class XKCD:
     # Assumes given number is correct
     async def get_xkcd(self, number: int = None):
         url = "http://xkcd.com/info.0.json" if number is None else f'http://xkcd.com/{number}/info.0.json'
-        try:
-            request = requests.get(url).json()
-            return request
-        except (requests.exceptions.Timeout, requests.exceptions.RequestException):
-            return None
+        async with self.bot.session.get(url) as r:
+            if r.status == 200:
+                data = await r.json()
+                return data
+            else:
+                return None
 
     @commands.command(name="xkcd")
     @commands.guild_only()
