@@ -14,11 +14,10 @@ except:
 class Util(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.start_time = bot.uptime
 
     # Return uptime of bot
     def _get_uptime(self):
-        time_diff = datetime.utcnow() - self.start_time
+        time_diff = datetime.utcnow() - self.bot.start_time
         uptime = f'{time_diff.days}d {time_diff.seconds//3600}h {(time_diff.seconds//60)%60}m'
         return uptime
 
