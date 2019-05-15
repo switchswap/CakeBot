@@ -48,6 +48,5 @@ class Animals(commands.Cog):
         await ctx.send(embed=embed)
 
 
-# Important!
 def setup(bot):
     bot.add_cog(Animals(bot))

@@ -33,7 +33,6 @@ class Gruntle(commands.Cog):
         await ctx.send(embed=embed)
 
 
-# Important!
 def setup(bot):
     if soup_available:
         bot.add_cog(Gruntle(bot))
