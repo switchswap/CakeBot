@@ -7,7 +7,7 @@ except:
     soup_available = False
 
 
-class Gruntle:
+class Gruntle(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

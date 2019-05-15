@@ -2,7 +2,7 @@ from discord.ext import commands
 from discord import Embed
 
 
-class Animals:
+class Animals(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

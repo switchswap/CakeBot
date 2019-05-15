@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import Embed
 
 
-class Osu:
+class Osu(commands.Cog):
     API_KEY = config.osu_api_key
 
     def __init__(self, bot):

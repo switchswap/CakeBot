@@ -5,7 +5,7 @@ from time import time
 import requests
 
 
-class XKCD:
+class XKCD(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.latest_comic = 1

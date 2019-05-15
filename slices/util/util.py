@@ -11,7 +11,7 @@ except:
     psutil_available = False
 
 
-class Util:
+class Util(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.start_time = bot.uptime
