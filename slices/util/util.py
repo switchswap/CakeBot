@@ -1,7 +1,8 @@
 import os
+import asyncio
 import traceback
 from datetime import datetime
-from discord import Embed, __version__
+from discord import Embed, __version__, Activity, ActivityType
 from discord.ext import commands
 from platform import python_version
 try:
@@ -14,6 +15,7 @@ except:
 class Util(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.presence_task = self.bot.loop.create_task(self.loop_presence())
 
     # Return uptime of bot
     def _get_uptime(self):
@@ -104,6 +106,16 @@ class Util(commands.Cog):
             embed.description = ":white_check_mark: Successfully reloaded slice!"
         await ctx.send(embed=embed)
 
+    # Reload presence every 30 minutes
+    async def loop_presence(self):
+        await self.bot.wait_until_ready()
+        while not self.bot.is_closed():
+            # Set presence
+            print("Setting activity...")
+            game = Activity(name="!help", type=ActivityType.listening)
+            await self.bot.change_presence(activity=game)
+            print("Waiting 45 minutes...")
+            await asyncio.sleep(2700)
 
 def setup(bot):
     if psutil_available:
