@@ -25,7 +25,7 @@ class Cake(commands.AutoShardedBot):
                          fetch_offline_members=False)
 
         self.extensions_dir = "slices"
-        self.uptime = None
+        self.start_time = None
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.approved_bots = config.approved_bots
         self.default_color = config.default_color
@@ -39,17 +39,14 @@ class Cake(commands.AutoShardedBot):
             except (discord.ClientException, ModuleNotFoundError):
                 print(f"Failed to load module {extension}.")
                 traceback.print_exc()
+        print() # Blank line for aesthetics
 
     async def on_ready(self):
         # Set uptime
-        if self.uptime is None:
-            self.uptime = datetime.utcnow()
+        if self.start_time is None:
+            self.start_time = datetime.utcnow()
 
-        # Set presence
-        game = discord.Activity(name="!help", type=discord.ActivityType.listening)
-        await self.change_presence(activity=game)
-
-        print(f"Logged in as: {self.user.name} - {self.user.id}\nVersion: {discord.__version__}\n")
+        print(f"\nLogged in as: {self.user.name} - {self.user.id}\nVersion: {discord.__version__}\n")
         print("Successfully logged in!")
         print("-------------------")
         print("Servers connected to:")
