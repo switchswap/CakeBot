@@ -2,7 +2,6 @@ from discord.ext import commands
 from random import randint
 from discord import Embed
 from time import time
-import requests
 
 
 class XKCD(commands.Cog):
