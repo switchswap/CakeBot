@@ -1,15 +1,15 @@
 import aiohttp
-import config
 import discord
 import traceback
 from os import sep
 from glob import iglob
 from discord.ext import commands
 from datetime import datetime
+from core.util import config_loader
 
 
 def _get_prefix(bot, message):
-    prefixes = config.bot_prefixes
+    prefixes = config_loader.load_key("bot_prefixes")
 
     # Allow only ! in PM
     if not message.guild:
@@ -26,9 +26,9 @@ class Cake(commands.AutoShardedBot):
 
         self.extensions_dir = "slices"
         self.start_time = None
-        self.session = aiohttp.ClientSession(loop=self.loop)
-        self.approved_bots = config.approved_bots
-        self.default_color = config.default_color
+        self.approved_bots = config_loader.load_key("approved_bots", "list")  # List
+        self.default_color = config_loader.load_key("default_color", "string")
+        self.bot_token = config_loader.load_key("bot_token", "string")
 
         # Load extensions from folders
         for extension in iglob(self.extensions_dir + "/**/*.py", recursive=True):
@@ -39,7 +39,9 @@ class Cake(commands.AutoShardedBot):
             except (discord.ClientException, ModuleNotFoundError):
                 print(f"Failed to load module {extension}.")
                 traceback.print_exc()
-        print() # Blank line for aesthetics
+
+        self.session = aiohttp.ClientSession(loop=self.loop)
+        print()  # Blank line for aesthetics
 
     async def on_ready(self):
         # Set uptime
@@ -73,7 +75,7 @@ class Cake(commands.AutoShardedBot):
 
     def run(self):
         try:
-            super().run(config.bot_token, bot=True, reconnect=True)
+            super().run(self.bot_token, bot=True, reconnect=True)
         except:
             print("Unable to start bot!")
 
