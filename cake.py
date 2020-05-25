@@ -9,7 +9,7 @@ from core.util import config_loader
 
 
 def _get_prefix(bot, message):
-    prefixes = config_loader.load_key("bot_prefixes")
+    prefixes = config_loader.load_key("bot_prefixes", "list of characters")
 
     # Allow only ! in PM
     if not message.guild:
