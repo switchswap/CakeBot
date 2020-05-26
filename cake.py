@@ -26,8 +26,8 @@ class Cake(commands.AutoShardedBot):
 
         self.extensions_dir = "slices"
         self.start_time = None
-        self.approved_bots = config_loader.load_key("approved_bots", "list")  # List
-        self.default_color = config_loader.load_key("default_color", "string")
+        self.approved_bots = config_loader.load_key("approved_bots", "list of id's")
+        self.default_color = config_loader.load_key("default_color", "hex color")
         self.bot_token = config_loader.load_key("bot_token", "string")
 
         # Load extensions from folders
