@@ -1,6 +1,5 @@
 import os
 import asyncio
-import traceback
 from datetime import datetime
 from discord import Embed, __version__, Activity, ActivityType
 from discord.ext import commands
@@ -57,56 +56,67 @@ class Util(commands.Cog):
         embed.add_field(name="Slices", value=str(len(self.bot.cogs.keys())), inline=True)
         embed.add_field(name="Guilds", value=str(len(self.bot.guilds)), inline=True)
         embed.add_field(name="Uptime", value=self._get_uptime(), inline=True)
-        embed.set_footer(text="This is an instance of Cakebot created by Switch!")
+        embed.set_footer(text="This is an instance of Cakebot created by `Switch#8155`!")
         await ctx.send(embed=embed)
 
     # Unload slice
     @commands.command(name="unload", hidden=True)
     @commands.is_owner()
     async def unload_slice(self, ctx, *, name):
+        description = ":white_check_mark: Successfully unloaded slice!"
         try:
             self.bot.unload_extension(name)
-        except Exception:
-            embed = Embed(color=self.bot.default_color)
-            embed.description = ":x: Could not unload slice!"
-            print(traceback.format_exc())
-        else:
-            embed = Embed(color=self.bot.default_color)
-            embed.description = ":white_check_mark: Successfully unloaded slice!"
+        except commands.ExtensionNotLoaded:
+            description = ":x: Slice not loaded!"
+
+        embed = Embed(color=self.bot.default_color)
+        embed.description = description
+        print(f'Unloaded module {name}')
         await ctx.send(embed=embed)
 
     # Load slice
     @commands.command(name="load", hidden=True)
     @commands.is_owner()
     async def load_slice(self, ctx, *, name):
+        description = ":white_check_mark: Successfully loaded slice!"
         try:
             self.bot.load_extension(name)
-        except Exception:
-            embed = Embed(color=self.bot.default_color)
-            embed.description = ":x: Could not load slice!"
-            print(traceback.format_exc())
-        else:
-            embed = Embed(color=self.bot.default_color)
-            embed.description = ":white_check_mark: Successfully loaded slice!"
+        except commands.ExtensionNotFound:
+            description = ":x: Slice could not be found!"
+        except commands.ExtensionAlreadyLoaded:
+            description = ":x: Slice already loaded!"
+        except commands.NoEntryPointError:
+            description = ":x: The slice does not have a setup function!"
+        except commands.ExtensionFailed:
+            description = ":x: Error in the slice setup function!"
+
+        embed = Embed(color=self.bot.default_color)
+        embed.description = description
+        print(f'Loaded module {name}')
         await ctx.send(embed=embed)
 
     # Reload slice
     @commands.command(name="reload", hidden=True)
     @commands.is_owner()
     async def reload_slice(self, ctx, *, name):
+        description = ":white_check_mark: Successfully reloaded slice!"
         try:
-            self.bot.unload_extension(name)
-            self.bot.load_extension(name)
-        except Exception:
-            embed = Embed(color=self.bot.default_color)
-            embed.description = ":x: Could not reload slice!"
-            print(traceback.format_exc())
-        else:
-            embed = Embed(color=self.bot.default_color)
-            embed.description = ":white_check_mark: Successfully reloaded slice!"
+            self.bot.reload_extension(name)
+        except commands.ExtensionNotLoaded:
+            description = ":x: Could not reload slice!"
+        except commands.ExtensionNotFound:
+            description = ":x: Slice could not be found!"
+        except commands.NoEntryPointError:
+            description = ":x: The slice does not have a setup function!"
+        except commands.ExtensionFailed:
+            description = ":x: Error in the slice setup function!"
+
+        embed = Embed(color=self.bot.default_color)
+        embed.description = description
+        print(f'Reloaded module {name}')
         await ctx.send(embed=embed)
 
-    # Reload presence every 30 minutes
+    # Reload presence every 45 minutes
     async def loop_presence(self):
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
@@ -115,7 +125,8 @@ class Util(commands.Cog):
             game = Activity(name="!help", type=ActivityType.listening)
             await self.bot.change_presence(activity=game)
             print("Waiting 45 minutes...")
-            await asyncio.sleep(2700)
+            await asyncio.sleep(2700)  # 45 minutes in seconds
+
 
 def setup(bot):
     if psutil_available:
