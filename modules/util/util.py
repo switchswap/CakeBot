@@ -14,7 +14,7 @@ except:
 class Util(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.presence_task = self.bot.loop.create_task(self.loop_presence())
+        bot.loop.create_task(self.loop_presence())
 
     # Return uptime of bot
     def _get_uptime(self):
