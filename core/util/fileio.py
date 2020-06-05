@@ -7,7 +7,7 @@ class FileIO:
     def __init__(self, slice_folder, file_name):
         self.slice_folder = slice_folder
         self.file_name = file_name
-        self.file_path = f"slices/{self.slice_folder}/{self.file_name}"
+        self.file_path = f"modules/{self.slice_folder}/{self.file_name}"
         self._init_file()
 
     def _init_file(self):

@@ -19,25 +19,25 @@ def _get_prefix(bot, message):
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
-class Cake(commands.AutoShardedBot):
+class RoboSwap(commands.AutoShardedBot):
     def __init__(self):
-        super().__init__(command_prefix=_get_prefix, description="A Modular Cakebot!",
+        super().__init__(command_prefix=_get_prefix, description="A Modular SwapBot!",
                          fetch_offline_members=False)
 
-        self.extensions_dir = "slices"
+        self.extensions_dir = "modules"
         self.start_time = None
         self.approved_bots = config_loader.load_key("approved_bots", "list of id's")
         self.default_color = config_loader.load_key("default_color", "hex color")
         self.bot_token = config_loader.load_key("bot_token", "string")
 
         # Load extensions from folders
-        for extension in iglob(self.extensions_dir + "/**/*.py", recursive=True):
-            extension = extension.replace(".py", '').replace(sep, '.')
+        for module in iglob(self.extensions_dir + "/**/*.py", recursive=True):
+            module = module.replace(".py", '').replace(sep, '.')
             try:
-                self.load_extension(extension)
-                print(f'Loaded module {extension}')
+                self.load_extension(module)
+                print(f'Loaded module {module}')
             except (discord.ClientException, ModuleNotFoundError):
-                print(f"Failed to load module {extension}.")
+                print(f"Failed to load module {module}.")
                 traceback.print_exc()
 
         self.session = aiohttp.ClientSession(loop=self.loop)
@@ -81,5 +81,5 @@ class Cake(commands.AutoShardedBot):
 
 
 if __name__ == '__main__':
-    cake = Cake()
-    cake.run()
+    bot = RoboSwap()
+    bot.run()
