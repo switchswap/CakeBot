@@ -18,7 +18,8 @@ class Osu(commands.Cog):
             else:
                 return None
 
-    def parse_stats(self, stats_json_array):
+    @staticmethod
+    def parse_stats(stats_json_array):
         if stats_json_array is None or len(stats_json_array) == 0:
             embed = Embed(color=0xFF66AA)
             embed.description = ":x: Could not find user!"
