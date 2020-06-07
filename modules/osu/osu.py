@@ -33,7 +33,7 @@ class Osu(commands.Cog):
         embed.add_field(name="Rank", value=stats_json['pp_rank'], inline=True)
         embed.add_field(name="Country Rank", value=stats_json['pp_country_rank'], inline=True)
         embed.add_field(name="PP", value=stats_json['pp_raw'], inline=True)
-        embed.add_field(name="Accuracy", value=stats_json['accuracy'], inline=True)
+        embed.add_field(name="Accuracy", value=str(round(float(stats_json['accuracy']), 3)), inline=True)
         embed.add_field(name="Level", value=stats_json['level'], inline=True)
         embed.add_field(name="Play Count", value=stats_json['playcount'], inline=True)
         embed.set_footer(text="Powered by https://osu.ppy.sh")
