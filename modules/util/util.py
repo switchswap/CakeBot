@@ -117,18 +117,6 @@ class Util(commands.Cog):
         await ctx.send(embed=embed)
 
 
-    @commands.command(name="snowflake")
-    async def snowflake(self, ctx, snowflake: int):
-        """
-        Returns timestamp from discord id
-        """
-        unix = ((snowflake >> 22) + 1420070400000) / 1000
-        readable_date = datetime.utcfromtimestamp(unix).strftime('%m-%d-%Y %H:%M:%S UTC')
-        embed = Embed(color=self.bot.default_color)
-        embed.add_field(name="Date", value=readable_date)
-        await ctx.send(embed=embed)
-
-
 def setup(bot):
     if psutil_available:
         bot.add_cog(Util(bot))
