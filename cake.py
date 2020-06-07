@@ -31,6 +31,7 @@ class RoboSwap(commands.AutoShardedBot):
         self.approved_bots = config_manager.load_key("approved_bots", List[int])
         self.default_color = config_manager.load_key("default_color", List[int])
         self.bot_token = config_manager.load_key("bot_token", str)
+        self.session = None
 
         # Load extensions from folders
         for module in iglob(self.extensions_dir + "/**/*.py", recursive=True):
@@ -55,10 +56,19 @@ class RoboSwap(commands.AutoShardedBot):
             await self.change_presence(activity=game)
             print("Waiting 45 minutes...")
             await asyncio.sleep(2700)  # 45 minutes in seconds
+
+    async def create_aiohttp_session(self):
+        """
+        Create aiohttp ClientSession
+        """
         self.session = aiohttp.ClientSession(loop=self.loop)
-        print()  # Blank line for aesthetics
+        print("Created aiohttp ClientSession")
 
     async def on_ready(self):
+        # Create task to create an aiohttp ClientSession
+        self.loop.create_task(self.create_aiohttp_session())
+        print("Create ClientSession task set")
+
         # Create task to reset the bot presence since it disappears occasionally
         self.loop.create_task(self.loop_presence())
         print("Presence task set")
@@ -89,8 +99,8 @@ class RoboSwap(commands.AutoShardedBot):
         print("Resuming...")
 
     async def close(self):
-        await super().close()
         await self.session.close()
+        await super().close()
 
     def run(self):
         try:
