@@ -5,7 +5,8 @@ from os import sep
 from glob import iglob
 from discord.ext import commands
 from datetime import datetime
-from core.util import config_loader
+from discord import __version__, Activity, ActivityType, ClientException
+from core.util import config_manager
 
 
 def _get_prefix(bot, message):
@@ -24,11 +25,12 @@ class RoboSwap(commands.AutoShardedBot):
         super().__init__(command_prefix=_get_prefix, description="A Modular SwapBot!",
                          fetch_offline_members=False)
 
+        self.prefixes = config_manager.load_key("bot_prefixes", List[str])
         self.extensions_dir = "modules"
         self.start_time = None
-        self.approved_bots = config_loader.load_key("approved_bots", "list of id's")
-        self.default_color = config_loader.load_key("default_color", "hex color")
-        self.bot_token = config_loader.load_key("bot_token", "string")
+        self.approved_bots = config_manager.load_key("approved_bots", List[int])
+        self.default_color = config_manager.load_key("default_color", List[int])
+        self.bot_token = config_manager.load_key("bot_token", str)
 
         # Load extensions from folders
         for module in iglob(self.extensions_dir + "/**/*.py", recursive=True):

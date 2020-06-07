@@ -1,10 +1,10 @@
-from core.util import config_loader
+from core.util import config_manager
 from discord.ext import commands
 from discord import Embed
 
 
 class Osu(commands.Cog):
-    API_KEY = config_loader.load_key("osu_api_key", "string")
+    API_KEY = config_manager.load_key("osu_api_key", str)
 
     def __init__(self, bot):
         self.bot = bot
