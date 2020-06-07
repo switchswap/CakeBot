@@ -1,5 +1,7 @@
+from discord import Embed
 from discord.ext import commands
 from random import randint
+from datetime import datetime
 
 
 class General(commands.Cog):
