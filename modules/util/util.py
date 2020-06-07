@@ -116,16 +116,6 @@ class Util(commands.Cog):
         print(f'Reloaded module {name}')
         await ctx.send(embed=embed)
 
-    # Reload presence every 45 minutes
-    async def loop_presence(self):
-        await self.bot.wait_until_ready()
-        while not self.bot.is_closed():
-            # Set presence
-            print("Setting activity...")
-            game = Activity(name="!help", type=ActivityType.listening)
-            await self.bot.change_presence(activity=game)
-            print("Waiting 45 minutes...")
-            await asyncio.sleep(2700)  # 45 minutes in seconds
 
     @commands.command(name="snowflake")
     async def snowflake(self, ctx, snowflake: int):

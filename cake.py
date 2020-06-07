@@ -1,5 +1,4 @@
 import aiohttp
-import discord
 import traceback
 from os import sep
 from glob import iglob
@@ -7,6 +6,7 @@ from discord.ext import commands
 from datetime import datetime
 from discord import __version__, Activity, ActivityType, ClientException
 from core.util import config_manager
+import asyncio
 
 
 def _get_prefix(bot, message):
@@ -42,10 +42,27 @@ class RoboSwap(commands.AutoShardedBot):
                 print(f"Failed to load module {module}.")
                 traceback.print_exc()
 
+    async def loop_presence(self):
+        """
+        Reload presence every 45 minutes
+        """
+        await self.wait_until_ready()
+        while not self.is_closed():
+            # Set presence
+            print("Setting activity...")
+            # Todo: Remove hardcoded help command
+            game = Activity(name="!help", type=ActivityType.listening)
+            await self.change_presence(activity=game)
+            print("Waiting 45 minutes...")
+            await asyncio.sleep(2700)  # 45 minutes in seconds
         self.session = aiohttp.ClientSession(loop=self.loop)
         print()  # Blank line for aesthetics
 
     async def on_ready(self):
+        # Create task to reset the bot presence since it disappears occasionally
+        self.loop.create_task(self.loop_presence())
+        print("Presence task set")
+
         # Set uptime
         if self.start_time is None:
             self.start_time = datetime.utcnow()
