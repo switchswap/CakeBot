@@ -5,27 +5,43 @@ from datetime import datetime
 
 
 class General(commands.Cog):
+    """
+    Basic functions for any bot
+    """
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='add', aliases=['plus'])
-    @commands.guild_only()
-    async def do_addition(self, ctx, first: int, second: int):
-        total = first + second
-        await ctx.send(f'The sum of **{first}** and **{second}**  is  **{total}**')
-
     @commands.command(name='ping')
     async def ping(self, ctx):
+        """
+        Hello world for bots
+        """
         await ctx.send("pong!")
 
     @commands.command(name='owner')
     @commands.is_owner()
     async def owner_test(self, ctx):
-        await ctx.send(f'Hello {ctx.author.mention}. This command can only be used by you!!')
+        """
+        Owner-only test command
+        """
+        await ctx.send(f'Hello {ctx.author.mention}. This command can only be used by you!')
+
+    @commands.command(name='add', aliases=['plus'])
+    @commands.guild_only()
+    async def do_addition(self, ctx, first: int, second: int):
+        """
+        Add two numbers
+        """
+        total = first + second
+        await ctx.send(f'The sum of **{first}** and **{second}**  is  **{total}**')
 
     @commands.command(name="roll")
     @commands.guild_only()
     async def roll(self, ctx, boundary: str = None):
+        """
+        Get a random number within a given boundary
+        Default: 1-100
+        """
         valid_boundary = self._valid_boundary(boundary)
         if valid_boundary:
             await ctx.send(f"{ctx.author.mention} rolled {randint(1, int(boundary))}!")

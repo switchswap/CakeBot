@@ -18,6 +18,7 @@ def _get_prefix(bot, message):
         return '!'
 
     # Allow multiple prefixes while not in a PM
+    # Responds to mention as well as prefix
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -43,6 +44,7 @@ class RoboSwap(commands.AutoShardedBot):
             except (ClientException, ModuleNotFoundError):
                 print(f"Failed to load module {module}.")
                 traceback.print_exc()
+        print()  # Blank line for aesthetics
 
     async def loop_presence(self):
         """
@@ -78,32 +80,30 @@ class RoboSwap(commands.AutoShardedBot):
         if self.start_time is None:
             self.start_time = datetime.utcnow()
 
-        print(f"\nLogged in as: {self.user.name} - {self.user.id}\nVersion: {discord.__version__}\n")
-        print("Successfully logged in!")
-        print("-------------------")
+        print(f"\nLogged in as: {self.user.name} - {self.user.id}\nDiscord Version: {__version__}\n")
         print("Servers connected to:")
+        print("-------------------")
         for guild in self.guilds:
             print(guild.name)
         print("-------------------")
 
-    async def on_message(self, message):
-        await self.process_commands(message)
-
     async def process_commands(self, message):
+        """
+        This method is called in the `on_message` function and is used to process the command
+        Overriding it here to allow specific bots the ability to trigger commands
+        """
         if message.author.bot and message.author.id not in self.approved_bots:
             return
 
         ctx = await self.get_context(message)
         await self.invoke(ctx)
 
-    async def on_resumed(self):
-        print("Resuming...")
-
     async def close(self):
         await self.session.close()
         await super().close()
 
     def run(self):
+        # noinspection PyBroadException
         try:
             super().run(self.bot_token, bot=True, reconnect=True)
         except:
