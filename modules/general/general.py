@@ -16,7 +16,10 @@ class General(commands.Cog):
         """
         Hello world for bots
         """
-        await ctx.send("pong!")
+        embed = Embed(color=self.bot.default_color)
+        embed.title = "Pong!"
+        embed.description = f"Latency: **{round(self.bot.latency * 1000, 2)}** ms"
+        await ctx.send(embed=embed)
 
     @commands.command(name='owner')
     @commands.is_owner()
