@@ -7,11 +7,14 @@ class FileIO:
     def __init__(self, slice_folder, file_name):
         self.slice_folder = slice_folder
         self.file_name = file_name
-        self.file_path = f"modules/{self.slice_folder}/{self.file_name}"
+        self.file_dir = f"modules/data/{self.slice_folder}"
+        self.file_path = f"{self.file_dir}/{self.file_name}"
         self._init_file()
 
     def _init_file(self):
-        # Check if file exists (file_name) and creates it if needed
+        # Check if file exists (file_name) and creates path it if needed
+        path = Path(self.file_dir)
+        path.mkdir(parents=True, exist_ok=True)
         file = Path(self.file_path)
         file.touch(exist_ok=True)
 
