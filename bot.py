@@ -22,7 +22,7 @@ def _get_prefix(bot, message):
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
-class RoboSwap(commands.AutoShardedBot):
+class CakeBot(commands.AutoShardedBot):
     def __init__(self):
         super().__init__(command_prefix=_get_prefix, description="A Modular SwapBot!",
                          fetch_offline_members=False)
@@ -111,5 +111,5 @@ class RoboSwap(commands.AutoShardedBot):
 
 
 if __name__ == '__main__':
-    bot = RoboSwap()
+    bot = CakeBot()
     bot.run()

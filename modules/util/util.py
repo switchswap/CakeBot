@@ -69,7 +69,7 @@ class Util(commands.Cog):
         embed.add_field(name="Slices", value=str(len(self.bot.cogs.keys())), inline=True)
         embed.add_field(name="Guilds", value=str(len(self.bot.guilds)), inline=True)
         embed.add_field(name="Uptime", value=self._get_uptime(), inline=True)
-        embed.set_footer(text="This is an instance of RoboSwap created by Switch#8155!")
+        embed.set_footer(text="This is an instance of CakeBot created by Switch#8155!")
         await ctx.send(embed=embed)
 
     # Unload slice
