@@ -30,7 +30,7 @@ class Stats(commands.Cog):
         embed.add_field(name='Origin Server', value=emoji_guild.name, inline=False)
         if emoji.guild_id == ctx.guild.id and ctx.guild.me.guild_permissions.manage_emojis:
             emoji_data = await ctx.guild.fetch_emoji(emoji.id)
-            embed.add_field(name="Emoji created by", value=emoji_data.user, inline=False)
+            embed.add_field(name="Emoji created by", value=emoji_data.user.mention, inline=False)
         embed.set_thumbnail(url=str(emoji.url))
         embed.set_footer(text="Emoji created at " + emoji.created_at.strftime("%m-%d-%Y %H:%M:%S UTC"))
         await ctx.send(embed=embed)
