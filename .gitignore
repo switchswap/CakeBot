@@ -2,3 +2,6 @@ config.py
 __pycache__
 .ipynb_checkpoints
 /venv
+/modules/data
+/modules/test
+.idea/
