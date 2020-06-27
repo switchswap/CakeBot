@@ -4,7 +4,7 @@ from os import sep
 from glob import iglob
 from discord.ext import commands
 from datetime import datetime
-from discord import __version__, Activity, ActivityType, ClientException
+from discord import __version__, Activity, ActivityType
 from core.util import config_manager
 from typing import List
 import asyncio
@@ -41,7 +41,7 @@ class RoboSwap(commands.AutoShardedBot):
             try:
                 self.load_extension(module)
                 print(f'Loaded module {module}')
-            except (ClientException, ModuleNotFoundError):
+            except:
                 print(f"Failed to load module {module}.")
                 traceback.print_exc()
         print()  # Blank line for aesthetics
