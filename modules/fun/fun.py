@@ -34,32 +34,25 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def corona(self, ctx, country_code=None):
-        if country_code is not None:
-            url = f"https://api.thevirustracker.com/free-api?countryTotal={country_code}"
-        else:
-            url = "https://api.thevirustracker.com/free-api?global=stats"
-
+    async def corona(self, ctx):
         async with ctx.typing():
-            data = await self._get_data(url)
-        if data is not None and "data" not in data["results"][0]:
-            embed = Embed(color=self.bot.default_color)
-            embed.add_field(name="Total Cases", value=data["results"][0]["total_cases"], inline=False)
-            embed.add_field(name="Recovered", value=data["results"][0]["total_recovered"], inline=False)
-            embed.add_field(name="Unresolved", value=data["results"][0]["total_unresolved"], inline=False)
-            embed.add_field(name="Deaths", value=data["results"][0]["total_deaths"], inline=False)
-            embed.add_field(name="Active Cases", value=data["results"][0]["total_active_cases"], inline=False)
-            embed.add_field(name="New Cases Today", value=data["results"][0]["total_new_cases_today"], inline=False)
-            if country_code is None:
+            data = await self._get_data("https://api.thevirustracker.com/free-api?global=stats")
+
+        embed = Embed(color=self.bot.default_color)
+        if data is not None:
+            if "data" not in data:
+                embed.add_field(name="Total Cases", value=data["results"][0]["total_cases"])
+                embed.add_field(name="Recovered", value=data["results"][0]["total_recovered"])
+                embed.add_field(name="Unresolved", value=data["results"][0]["total_unresolved"])
+                embed.add_field(name="Deaths", value=data["results"][0]["total_deaths"])
+                embed.add_field(name="Active Cases", value=data["results"][0]["total_active_cases"])
+                embed.add_field(name="New Cases Today", value=data["results"][0]["total_new_cases_today"])
                 embed.add_field(name="Affected Countries", value=data["results"][0]["total_affected_countries"],
                                 inline=False)
-            else:
-                embed.add_field(name="Danger Rank", value=data["results"][0]["total_danger_rank"], inline=False)
-        elif data is not None and "data" in data["results"][0]:
-            embed = Embed(color=self.bot.default_color, description=":x: Invalid country code!")
+            await ctx.send(embed=embed)
         else:
-            embed = Embed(color=self.bot.default_color, description=":x: Error talking to api!")
-        await ctx.send(embed=embed)
+            embed.description = ":x: Error talking to api!"
+            await ctx.send(embed=embed)
 
     @commands.command(aliases=['discrim'])
     @commands.guild_only()
