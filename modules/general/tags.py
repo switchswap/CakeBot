@@ -12,6 +12,7 @@ class Tags(commands.Cog):
         self.bot = bot
         self.file = fileio.FileIO("tags", "tags")
         self.tags = self._load_data()
+        self.partial_tags = {}
 
     @commands.group()
     @commands.guild_only()
@@ -25,18 +26,23 @@ class Tags(commands.Cog):
 
     @tag.command()
     async def make(self, ctx, *, tag_name: str):
-        if not self._tag_exists(tag_name, ctx.guild.id) and self._check_valid_name(tag_name):
+        if self._tag_in_use(tag_name, ctx.guild.id):
+            await ctx.send("That tag currently being modified!")
+        elif not self._tag_exists(tag_name, ctx.guild.id) and self._check_valid_name(tag_name):
+            self._mark_tag_in_use(tag_name, ctx.guild.id)
             await ctx.send(f"What are the contents of {tag_name}? **Type `abort` to cancel.**")
 
             def check(m):
-                return m.author == ctx.author
+                return m.channel.id == ctx.channel.id and m.author == ctx.author
 
             response = await self.bot.wait_for('message', check=check)
             if response.content.lower() == "abort":
+                self._unmark_tag_in_use(tag_name, ctx.guild.id)
                 await ctx.send("Canceled.")
                 return
 
             self._save_tag(tag_name, response)
+            self._unmark_tag_in_use(tag_name, ctx.guild.id)
             await ctx.send("Tag set!")
         else:
             await ctx.send("That tag already exists!")
@@ -47,16 +53,23 @@ class Tags(commands.Cog):
         if tag is not None and \
                 not await self.has_perms(tag["owner"], ctx.author):
             await ctx.send("That tag doesn't belong to you!")
-        else:
+        elif not self._tag_in_use(tag_name, ctx.guild.id):
+            self._mark_tag_in_use(tag_name, ctx.guild.id)
             await ctx.send("What would you like to replace the contents of this tag with? **Type `abort` to cancel.**")
+        else:
+            await ctx.send("That tag currently being modified!")
+            return
 
         def check(m):
-            return m.author == ctx.author
+            return m.channel.id == ctx.channel.id and m.author == ctx.author
 
         response = await self.bot.wait_for('message', check=check)
         if response.content.lower() == "abort":
+            self._unmark_tag_in_use(tag_name, ctx.guild.id)
             await ctx.send("Canceled.")
             return
+
+        self._unmark_tag_in_use(tag_name, ctx.guild.id)
         self._save_tag(tag_name, response)
         await ctx.send("Tag set!")
 
@@ -66,6 +79,7 @@ class Tags(commands.Cog):
         if tag is not None:
             if ctx.guild.get_member(tag["owner"]) is None or self.has_perms(tag["owner"], ctx.author):
                 self.tags[ctx.guild.id][tag_name]["owner"] = ctx.author.id
+                self._save_data()
                 await ctx.send("You are now the owner of this tag!")
             else:
                 await ctx.send("Tag owner is still in guild!")
@@ -77,11 +91,12 @@ class Tags(commands.Cog):
     async def info(self, ctx, *, tag_name):
         tag = self._find_tag(tag_name, ctx.guild.id)
         if tag is not None:
+            owner = ctx.guild.get_member(tag["owner"])
             creation_date = tag["creation_date"].strftime('%m-%d-%Y %H:%M:%S UTC')
             embed = Embed(color=self.bot.default_color)
-            embed.set_author(name=f"{ctx.author}", icon_url=ctx.author.avatar_url)
+            embed.set_author(name=f"{owner}", icon_url=owner.avatar_url)
             embed.title = tag["name"]
-            embed.add_field(name="Owner", value=ctx.author.mention)
+            embed.add_field(name="Owner", value=owner.mention)
             embed.set_footer(text=f"Created at {creation_date}")
             await ctx.send(embed=embed)
         else:
@@ -122,6 +137,15 @@ class Tags(commands.Cog):
         }
         self._save_data()
 
+    def _mark_tag_in_use(self, tag_name, guild_id):
+        if guild_id not in self.partial_tags:
+            self.partial_tags[guild_id] = {}
+        self.partial_tags[guild_id][tag_name.lower()] = {}
+        return
+
+    def _unmark_tag_in_use(self, tag_name, guild_id):
+        del self.partial_tags[guild_id][tag_name.lower()]
+
     def _save_data(self):
         file = self.file.open("wb")
         pickle.dump(self.tags, file)
@@ -148,6 +172,12 @@ class Tags(commands.Cog):
     def _tag_exists(self, tag_name, guild_id):
         tag_name = tag_name.lower()
         if guild_id in self.tags and tag_name in self.tags[guild_id]:
+            return True
+        return False
+
+    def _tag_in_use(self, tag_name, guild_id):
+        tag_name = tag_name.lower()
+        if guild_id in self.partial_tags and tag_name in self.partial_tags[guild_id]:
             return True
         return False
 
