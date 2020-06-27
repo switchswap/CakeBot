@@ -1,6 +1,6 @@
 import pickle
 from core.util import fileio
-from discord import Embed
+from discord import Embed, Member
 from discord.ext import commands
 
 
@@ -104,21 +104,23 @@ class Tags(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def tags(self, ctx):
+    async def tags(self, ctx, member: Member = None):
+        author = ctx.author if member is None else member
+        author_id = ctx.author.id if member is None else member.id
         # Get all the user tags
         tags = []
 
         tags_string = ""
         if ctx.guild.id in self.tags:
             for key in self.tags[ctx.guild.id]:
-                if self.tags[ctx.guild.id][key]["owner"] == ctx.author.id:
+                if self.tags[ctx.guild.id][key]["owner"] == author_id:
                     tags.append(self.tags[ctx.guild.id][key]["name"])
 
             for tag in tags:
                 tags_string += tag + "\n"
 
         embed = Embed(color=self.bot.default_color)
-        embed.set_author(name=f"{ctx.author}'s Tags", icon_url=ctx.author.avatar_url)
+        embed.set_author(name=f"{author}'s Tags", icon_url=author.avatar_url)
         embed.description = tags_string
         await ctx.send(embed=embed)
 
