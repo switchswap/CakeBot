@@ -21,7 +21,7 @@ class Gruntle(commands.Cog):
             else:
                 return None
 
-    @commands.command(name='gruntle', alias=['cute'])
+    @commands.command(name='gruntle', aliases=['cute'])
     @commands.guild_only()
     async def gruntle(self, ctx):
         image_url = await self.get_image()
