@@ -62,6 +62,7 @@ class Util(commands.Cog):
         Show bot information
         """
         embed = Embed(color=self.bot.default_color)
+        embed.set_thumbnail(url=ctx.me.avatar_url)
         embed.add_field(name="Memory", value=self._get_mem_usage(), inline=True)
         embed.add_field(name="Python", value=python_version(), inline=True)
         embed.add_field(name="discord.py", value=__version__, inline=True)
