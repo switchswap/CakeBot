@@ -7,7 +7,7 @@ import pickle
 class Points(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.file = fileio.FileIO("points", "points_db.txt")
+        self.file = fileio.FileIO("points", "points")
         self.point_lists = self.load_data()
 
     @commands.group(name="points", aliases=["tcn"])
