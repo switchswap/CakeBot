@@ -139,7 +139,7 @@ class Fun(commands.Cog):
             if ctx.guild.me.guild_permissions.manage_messages:
                 await ctx.message.delete()
         except:
-            await member.send("I couldn't message them! They probably have me blocked...s :sob:")
+            await ctx.send("I couldn't message them! They probably have me blocked...s :sob:")
 
     async def _get_data(self, url):
         async with self.bot.session.get(url) as r:
