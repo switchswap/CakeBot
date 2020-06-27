@@ -56,16 +56,16 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['discrim'])
     @commands.guild_only()
-    async def discriminators(self, ctx):
-        discriminator = ctx.author.discriminator
+    async def discriminators(self, ctx, user: Member=None):
+        user = ctx.author if user is None else user
+        discriminator = user.discriminator
         count = 0
         for member in ctx.guild.members:
-            if member.discriminator == discriminator and member != ctx.author:
+            if member.discriminator == discriminator and member != user:
                 count += 1
         embed = Embed(color=self.bot.default_color,
-                      description=f"You share the discriminator {ctx.author.discriminator} with {count} other(s)!")
+                      description=f"You share the discriminator {user.discriminator} with {count} other(s)!")
         await ctx.send(embed=embed)
-        # Todo: Pagination to list the users
 
     @commands.command(hidden=True)
     @commands.guild_only()
