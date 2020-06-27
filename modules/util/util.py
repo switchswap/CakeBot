@@ -124,7 +124,7 @@ class Util(commands.Cog):
         try:
             self.bot.reload_extension(name)
         except commands.ExtensionNotLoaded:
-            description = ":x: Could not reload slice!"
+            description = ":x: Could not reload slice since it's not loaded!"
         except commands.ExtensionNotFound:
             description = ":x: Slice could not be found!"
         except commands.NoEntryPointError:
