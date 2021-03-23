@@ -4,7 +4,7 @@ from os import sep
 from glob import iglob
 from discord.ext import commands
 from datetime import datetime
-from discord import __version__, Activity, ActivityType
+from discord import __version__, Activity, ActivityType, Intents
 from core.util import config_manager
 from typing import List
 import asyncio
@@ -25,13 +25,15 @@ def _get_prefix(bot, message):
 class CakeBot(commands.AutoShardedBot):
     def __init__(self):
         super().__init__(command_prefix=_get_prefix, description="A Modular SwapBot!",
-                         fetch_offline_members=False)
+                         fetch_offline_members=False, intents=Intents.all())
 
         self.prefixes = config_manager.load_key("bot_prefixes", List[str])
         self.extensions_dir = "modules"
         self.start_time = None
-        self.approved_bots = config_manager.load_key("approved_bots", List[int])
-        self.default_color = config_manager.load_key("default_color", List[int])
+        self.approved_bots = config_manager.load_key(
+            "approved_bots", List[int])
+        self.default_color = config_manager.load_key(
+            "default_color", List[int])
         self.bot_token = config_manager.load_key("bot_token", str)
         self.session = None
 
@@ -80,7 +82,8 @@ class CakeBot(commands.AutoShardedBot):
         if self.start_time is None:
             self.start_time = datetime.utcnow()
 
-        print(f"\nLogged in as: {self.user.name} - {self.user.id}\nDiscord Version: {__version__}\n")
+        print(
+            f"\nLogged in as: {self.user.name} - {self.user.id}\nDiscord Version: {__version__}\n")
         print("Servers connected to:")
         print("-------------------")
         for guild in self.guilds:
